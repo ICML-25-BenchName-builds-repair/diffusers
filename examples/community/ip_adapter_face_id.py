@@ -14,24 +14,34 @@
 
 import inspect
 from typing import Any, Callable, Dict, List, Optional, Union
-from safetensors import safe_open
 
+from packaging import version
+from safetensors import safe_open
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from packaging import version
-from transformers import CLIPImageProcessor, CLIPTextModel, CLIPTokenizer, CLIPVisionModelWithProjection
+from transformers import (
+    CLIPImageProcessor,
+    CLIPTextModel,
+    CLIPTokenizer,
+    CLIPVisionModelWithProjection,
+)
 
 from diffusers.configuration_utils import FrozenDict
 from diffusers.image_processor import VaeImageProcessor
-from diffusers.loaders import FromSingleFileMixin, IPAdapterMixin, LoraLoaderMixin, TextualInversionLoaderMixin
+from diffusers.loaders import (
+    FromSingleFileMixin,
+    IPAdapterMixin,
+    LoraLoaderMixin,
+    TextualInversionLoaderMixin,
+)
 from diffusers.models import AutoencoderKL, UNet2DConditionModel
 from diffusers.models.attention_processor import FusedAttnProcessor2_0
-from diffusers.models.lora import adjust_lora_scale_text_encoder, LoRALinearLayer
+from diffusers.models.lora import LoRALinearLayer, adjust_lora_scale_text_encoder
 from diffusers.schedulers import KarrasDiffusionSchedulers
 from diffusers.utils import (
-    _get_model_file,
     USE_PEFT_BACKEND,
+    _get_model_file,
     deprecate,
     logging,
     scale_lora_layers,
