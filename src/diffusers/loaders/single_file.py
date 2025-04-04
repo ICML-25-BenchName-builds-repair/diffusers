@@ -14,8 +14,21 @@
 import os
 import re
 
-from huggingface_hub.utils import validate_hf_hub_args
-from transformers import AutoFeatureExtractor
+# Import validate_hf_hub_args if available, otherwise define a dummy decorator
+try:
+    from huggingface_hub.utils import validate_hf_hub_args
+except ImportError:
+    def validate_hf_hub_args(func):
+        return func
+
+# Import AutoFeatureExtractor if available, otherwise define a dummy class
+try:
+    from transformers import AutoFeatureExtractor
+except ImportError:
+    class AutoFeatureExtractor:
+        @classmethod
+        def from_pretrained(cls, *args, **kwargs):
+            return None
 
 from ..models.modeling_utils import load_state_dict
 from ..utils import (
