@@ -56,12 +56,9 @@ class AutoencoderKL(ModelMixin, ConfigMixin, FromSingleFileMixin):
             training set. This is used to scale the latent space to have unit variance when training the diffusion
             model. The latents are scaled with the formula `z = z * scaling_factor` before being passed to the
             diffusion model. When decoding, the latents are scaled back to the original scale with the formula: `z = 1
-            / scaling_factor * z`. For more details, refer to sections 4.3.2 and D.1 of the [High-Resolution Image
-            Synthesis with Latent Diffusion Models](https://arxiv.org/abs/2112.10752) paper.
-        force_upcast (`bool`, *optional*, default to `True`):
-            If enabled it will force the VAE to run in float32 for high image resolution pipelines, such as SD-XL. VAE
-            can be fine-tuned / trained to a lower range without loosing too much precision in which case
-            `force_upcast` can be set to `False` - see: https://huggingface.co/madebyollin/sdxl-vae-fp16-fix
+            / scaling_factor * z`.
+        norm_num_groups (`int`, *optional*, defaults to 32): The number of groups for the normalization.
+        force_upcast (`bool`, *optional*, defaults to False): If True, the model will upcast all operations to float32.
     """
 
     _supports_gradient_checkpointing = True
