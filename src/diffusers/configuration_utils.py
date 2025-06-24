@@ -13,7 +13,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-""" ConfigMixin base class and utilities."""
+"""ConfigMixin base class and utilities."""
+
 import dataclasses
 import functools
 import importlib
@@ -672,7 +673,7 @@ def flax_register_to_config(cls):
             # ignore flax specific attributes
             if field.name in self._flax_internal_args:
                 continue
-            if type(field.default) == dataclasses._MISSING_TYPE:
+            if field.default is dataclasses._MISSING_TYPE:
                 default_kwargs[field.name] = None
             else:
                 default_kwargs[field.name] = getattr(self, field.name)
