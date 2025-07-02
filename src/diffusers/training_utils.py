@@ -305,7 +305,7 @@ class EMAModel:
                 `ExponentialMovingAverage` was initialized will be used.
         """
         if self.temp_stored_params is None:
-            raise RuntimeError("This ExponentialMovingAverage has no `store()`ed weights " "to `restore()`")
+            raise RuntimeError("This ExponentialMovingAverage has no `store()`ed weights to `restore()`")
         for c_param, param in zip(self.temp_stored_params, parameters):
             param.data.copy_(c_param.data)
 

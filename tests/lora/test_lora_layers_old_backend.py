@@ -476,9 +476,9 @@ class LoraLoaderMixinTests(unittest.TestCase):
         outputs_with_lora = pipe.text_encoder(**dummy_tokens)[0]
         assert outputs_with_lora.shape == (1, 77, 32)
 
-        assert torch.allclose(
-            outputs_without_lora, outputs_with_lora
-        ), "lora_up_weight are all zero, so the lora outputs should be the same to without lora outputs"
+        assert torch.allclose(outputs_without_lora, outputs_with_lora), (
+            "lora_up_weight are all zero, so the lora outputs should be the same to without lora outputs"
+        )
 
         # create lora_attn_procs with randn up.weights
         create_text_encoder_lora_attn_procs(pipe.text_encoder)
@@ -492,9 +492,9 @@ class LoraLoaderMixinTests(unittest.TestCase):
         outputs_with_lora = pipe.text_encoder(**dummy_tokens)[0]
         assert outputs_with_lora.shape == (1, 77, 32)
 
-        assert not torch.allclose(
-            outputs_without_lora, outputs_with_lora
-        ), "lora_up_weight are not zero, so the lora outputs should be different to without lora outputs"
+        assert not torch.allclose(outputs_without_lora, outputs_with_lora), (
+            "lora_up_weight are not zero, so the lora outputs should be different to without lora outputs"
+        )
 
     def test_text_encoder_lora_remove_monkey_patch(self):
         pipeline_components, _ = self.get_dummy_components()
@@ -515,9 +515,9 @@ class LoraLoaderMixinTests(unittest.TestCase):
         outputs_with_lora = pipe.text_encoder(**dummy_tokens)[0]
         assert outputs_with_lora.shape == (1, 77, 32)
 
-        assert not torch.allclose(
-            outputs_without_lora, outputs_with_lora
-        ), "lora outputs should be different to without lora outputs"
+        assert not torch.allclose(outputs_without_lora, outputs_with_lora), (
+            "lora outputs should be different to without lora outputs"
+        )
 
         # remove monkey patch
         pipe._remove_text_encoder_monkey_patch()
@@ -526,9 +526,9 @@ class LoraLoaderMixinTests(unittest.TestCase):
         outputs_without_lora_removed = pipe.text_encoder(**dummy_tokens)[0]
         assert outputs_without_lora_removed.shape == (1, 77, 32)
 
-        assert torch.allclose(
-            outputs_without_lora, outputs_without_lora_removed
-        ), "remove lora monkey patch should restore the original outputs"
+        assert torch.allclose(outputs_without_lora, outputs_without_lora_removed), (
+            "remove lora monkey patch should restore the original outputs"
+        )
 
     def test_text_encoder_lora_scale(self):
         pipeline_components, lora_components = self.get_dummy_components()
@@ -612,15 +612,15 @@ class LoraLoaderMixinTests(unittest.TestCase):
         original_images_two = sd_pipe(**pipeline_inputs, generator=torch.manual_seed(0)).images
         orig_image_slice_two = original_images_two[0, -3:, -3:, -1]
 
-        assert not np.allclose(
-            orig_image_slice, lora_image_slice
-        ), "LoRA parameters should lead to a different image slice."
-        assert not np.allclose(
-            orig_image_slice_two, lora_image_slice
-        ), "LoRA parameters should lead to a different image slice."
-        assert np.allclose(
-            orig_image_slice, orig_image_slice_two, atol=1e-3
-        ), "Unloading LoRA parameters should lead to results similar to what was obtained with the pipeline without any LoRA parameters."
+        assert not np.allclose(orig_image_slice, lora_image_slice), (
+            "LoRA parameters should lead to a different image slice."
+        )
+        assert not np.allclose(orig_image_slice_two, lora_image_slice), (
+            "LoRA parameters should lead to a different image slice."
+        )
+        assert np.allclose(orig_image_slice, orig_image_slice_two, atol=1e-3), (
+            "Unloading LoRA parameters should lead to results similar to what was obtained with the pipeline without any LoRA parameters."
+        )
 
     @unittest.skipIf(torch_device != "cuda" or not is_xformers_available(), "This test is supposed to run on GPU")
     def test_lora_unet_attn_processors_with_xformers(self):
@@ -973,15 +973,15 @@ class SDXLLoraLoaderMixinTests(unittest.TestCase):
         original_images_two = sd_pipe(**pipeline_inputs, generator=torch.manual_seed(0)).images
         orig_image_slice_two = original_images_two[0, -3:, -3:, -1]
 
-        assert not np.allclose(
-            orig_image_slice, lora_image_slice
-        ), "LoRA parameters should lead to a different image slice."
-        assert not np.allclose(
-            orig_image_slice_two, lora_image_slice
-        ), "LoRA parameters should lead to a different image slice."
-        assert np.allclose(
-            orig_image_slice, orig_image_slice_two, atol=1e-3
-        ), "Unloading LoRA parameters should lead to results similar to what was obtained with the pipeline without any LoRA parameters."
+        assert not np.allclose(orig_image_slice, lora_image_slice), (
+            "LoRA parameters should lead to a different image slice."
+        )
+        assert not np.allclose(orig_image_slice_two, lora_image_slice), (
+            "LoRA parameters should lead to a different image slice."
+        )
+        assert np.allclose(orig_image_slice, orig_image_slice_two, atol=1e-3), (
+            "Unloading LoRA parameters should lead to results similar to what was obtained with the pipeline without any LoRA parameters."
+        )
 
     def test_load_lora_locally(self):
         pipeline_components, lora_components = self.get_dummy_components()
@@ -1170,15 +1170,15 @@ class SDXLLoraLoaderMixinTests(unittest.TestCase):
         original_images = sd_pipe(**pipeline_inputs, generator=torch.manual_seed(0)).images
         orig_image_slice_two = original_images[0, -3:, -3:, -1]
 
-        assert not np.allclose(
-            orig_image_slice, lora_image_slice
-        ), "Fusion of LoRAs should lead to a different image slice."
-        assert not np.allclose(
-            orig_image_slice_two, lora_image_slice
-        ), "Fusion of LoRAs should lead to a different image slice."
-        assert np.allclose(
-            orig_image_slice, orig_image_slice_two, atol=1e-3
-        ), "Reversing LoRA fusion should lead to results similar to what was obtained with the pipeline without any LoRA parameters."
+        assert not np.allclose(orig_image_slice, lora_image_slice), (
+            "Fusion of LoRAs should lead to a different image slice."
+        )
+        assert not np.allclose(orig_image_slice_two, lora_image_slice), (
+            "Fusion of LoRAs should lead to a different image slice."
+        )
+        assert np.allclose(orig_image_slice, orig_image_slice_two, atol=1e-3), (
+            "Reversing LoRA fusion should lead to results similar to what was obtained with the pipeline without any LoRA parameters."
+        )
 
     def test_lora_fusion_is_not_affected_by_unloading(self):
         pipeline_components, lora_components = self.get_dummy_components()
@@ -1215,9 +1215,9 @@ class SDXLLoraLoaderMixinTests(unittest.TestCase):
         images_with_unloaded_lora = sd_pipe(**pipeline_inputs, generator=torch.manual_seed(0)).images
         images_with_unloaded_lora_slice = images_with_unloaded_lora[0, -3:, -3:, -1]
 
-        assert (
-            np.abs(lora_image_slice - images_with_unloaded_lora_slice).max() < 2e-1
-        ), "`unload_lora_weights()` should have not effect on the semantics of the results as the LoRA parameters were fused."
+        assert np.abs(lora_image_slice - images_with_unloaded_lora_slice).max() < 2e-1, (
+            "`unload_lora_weights()` should have not effect on the semantics of the results as the LoRA parameters were fused."
+        )
 
     def test_fuse_lora_with_different_scales(self):
         pipeline_components, lora_components = self.get_dummy_components()
@@ -1267,9 +1267,9 @@ class SDXLLoraLoaderMixinTests(unittest.TestCase):
         lora_images_scale_0_5 = sd_pipe(**pipeline_inputs, generator=torch.manual_seed(0)).images
         lora_image_slice_scale_0_5 = lora_images_scale_0_5[0, -3:, -3:, -1]
 
-        assert not np.allclose(
-            lora_image_slice_scale_one, lora_image_slice_scale_0_5, atol=1e-03
-        ), "Different LoRA scales should influence the outputs accordingly."
+        assert not np.allclose(lora_image_slice_scale_one, lora_image_slice_scale_0_5, atol=1e-03), (
+            "Different LoRA scales should influence the outputs accordingly."
+        )
 
     def test_with_different_scales(self):
         pipeline_components, lora_components = self.get_dummy_components()
@@ -1310,13 +1310,13 @@ class SDXLLoraLoaderMixinTests(unittest.TestCase):
         ).images
         lora_image_slice_scale_0_0 = lora_images_scale_0_0[0, -3:, -3:, -1]
 
-        assert not np.allclose(
-            lora_image_slice_scale_one, lora_image_slice_scale_0_5, atol=1e-03
-        ), "Different LoRA scales should influence the outputs accordingly."
+        assert not np.allclose(lora_image_slice_scale_one, lora_image_slice_scale_0_5, atol=1e-03), (
+            "Different LoRA scales should influence the outputs accordingly."
+        )
 
-        assert np.allclose(
-            original_imagee_slice, lora_image_slice_scale_0_0, atol=1e-03
-        ), "LoRA scale of 0.0 shouldn't be different from the results without LoRA."
+        assert np.allclose(original_imagee_slice, lora_image_slice_scale_0_0, atol=1e-03), (
+            "LoRA scale of 0.0 shouldn't be different from the results without LoRA."
+        )
 
     def test_with_different_scales_fusion_equivalence(self):
         pipeline_components, lora_components = self.get_dummy_components()
@@ -1354,9 +1354,9 @@ class SDXLLoraLoaderMixinTests(unittest.TestCase):
         lora_images_scale_0_5_fusion = sd_pipe(**pipeline_inputs, generator=torch.manual_seed(0)).images
         lora_image_slice_scale_0_5_fusion = lora_images_scale_0_5_fusion[0, -3:, -3:, -1]
 
-        assert np.allclose(
-            lora_image_slice_scale_0_5, lora_image_slice_scale_0_5_fusion, atol=1e-03
-        ), "Fusion shouldn't affect the results when calling the pipeline with a non-default LoRA scale."
+        assert np.allclose(lora_image_slice_scale_0_5, lora_image_slice_scale_0_5_fusion, atol=1e-03), (
+            "Fusion shouldn't affect the results when calling the pipeline with a non-default LoRA scale."
+        )
 
         sd_pipe.unfuse_lora()
         images_unfused = sd_pipe(**pipeline_inputs, generator=torch.manual_seed(0)).images
@@ -1364,9 +1364,9 @@ class SDXLLoraLoaderMixinTests(unittest.TestCase):
 
         assert np.allclose(images_slice, images_slice_unfused, atol=1e-03), "Unfused should match no LoRA"
 
-        assert not np.allclose(
-            images_slice, lora_image_slice_scale_0_5, atol=1e-03
-        ), "0.5 scale and no scale shouldn't match"
+        assert not np.allclose(images_slice, lora_image_slice_scale_0_5, atol=1e-03), (
+            "0.5 scale and no scale shouldn't match"
+        )
 
     def test_save_load_fused_lora_modules(self):
         pipeline_components, lora_components = self.get_dummy_components()
@@ -1403,9 +1403,9 @@ class SDXLLoraLoaderMixinTests(unittest.TestCase):
         loaded_lora_images = sd_pipe_loaded(**pipeline_inputs, generator=torch.manual_seed(0)).images
         loaded_lora_image_slice = loaded_lora_images[0, -3:, -3:, -1]
 
-        assert np.allclose(
-            lora_image_slice_fusion, loaded_lora_image_slice, atol=1e-03
-        ), "The pipeline was serialized with LoRA parameters fused inside of the respected modules. The loaded pipeline should yield proper outputs, henceforth."
+        assert np.allclose(lora_image_slice_fusion, loaded_lora_image_slice, atol=1e-03), (
+            "The pipeline was serialized with LoRA parameters fused inside of the respected modules. The loaded pipeline should yield proper outputs, henceforth."
+        )
 
 
 @deprecate_after_peft_backend

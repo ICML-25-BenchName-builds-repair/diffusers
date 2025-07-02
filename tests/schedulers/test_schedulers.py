@@ -757,7 +757,7 @@ class SchedulerPushToHubTester(unittest.TestCase):
         scheduler.push_to_hub(self.repo_id, token=TOKEN)
         scheduler_loaded = DDIMScheduler.from_pretrained(f"{USER}/{self.repo_id}")
 
-        assert type(scheduler) == type(scheduler_loaded)
+        assert type(scheduler) is type(scheduler_loaded)
 
         # Reset repo
         delete_repo(token=TOKEN, repo_id=self.repo_id)
@@ -768,7 +768,7 @@ class SchedulerPushToHubTester(unittest.TestCase):
 
         scheduler_loaded = DDIMScheduler.from_pretrained(f"{USER}/{self.repo_id}")
 
-        assert type(scheduler) == type(scheduler_loaded)
+        assert type(scheduler) is type(scheduler_loaded)
 
         # Reset repo
         delete_repo(token=TOKEN, repo_id=self.repo_id)
@@ -784,7 +784,7 @@ class SchedulerPushToHubTester(unittest.TestCase):
         scheduler.push_to_hub(self.org_repo_id, token=TOKEN)
         scheduler_loaded = DDIMScheduler.from_pretrained(self.org_repo_id)
 
-        assert type(scheduler) == type(scheduler_loaded)
+        assert type(scheduler) is type(scheduler_loaded)
 
         # Reset repo
         delete_repo(token=TOKEN, repo_id=self.org_repo_id)
@@ -795,7 +795,7 @@ class SchedulerPushToHubTester(unittest.TestCase):
 
         scheduler_loaded = DDIMScheduler.from_pretrained(self.org_repo_id)
 
-        assert type(scheduler) == type(scheduler_loaded)
+        assert type(scheduler) is type(scheduler_loaded)
 
         # Reset repo
         delete_repo(token=TOKEN, repo_id=self.org_repo_id)

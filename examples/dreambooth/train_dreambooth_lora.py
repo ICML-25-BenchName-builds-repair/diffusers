@@ -84,8 +84,8 @@ license: creativeml-openrail-m
 base_model: {base_model}
 instance_prompt: {prompt}
 tags:
-- {'stable-diffusion' if isinstance(pipeline, StableDiffusionPipeline) else 'if'}
-- {'stable-diffusion-diffusers' if isinstance(pipeline, StableDiffusionPipeline) else 'if-diffusers'}
+- {"stable-diffusion" if isinstance(pipeline, StableDiffusionPipeline) else "if"}
+- {"stable-diffusion-diffusers" if isinstance(pipeline, StableDiffusionPipeline) else "if-diffusers"}
 - text-to-image
 - diffusers
 - lora

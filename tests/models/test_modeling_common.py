@@ -132,9 +132,9 @@ class ModelUtilsTest(unittest.TestCase):
                 )
 
             cache_requests = [r.method for r in m.request_history]
-            assert (
-                "HEAD" == cache_requests[0] and len(cache_requests) == 1
-            ), "We should call only `model_info` to check for _commit hash and `send_telemetry`"
+            assert "HEAD" == cache_requests[0] and len(cache_requests) == 1, (
+                "We should call only `model_info` to check for _commit hash and `send_telemetry`"
+            )
 
     def test_weight_overwrite(self):
         with tempfile.TemporaryDirectory() as tmpdirname, self.assertRaises(ValueError) as error_context:
@@ -299,7 +299,7 @@ class ModelTesterMixin:
             return
 
         model.set_default_attn_processor()
-        assert all(type(proc) == AttnProcessor for proc in model.attn_processors.values())
+        assert all(isinstance(proc, AttnProcessor) for proc in model.attn_processors.values())
         with torch.no_grad():
             if self.forward_requires_fresh_args:
                 output = model(**self.inputs_dict(0))[0]
@@ -307,7 +307,7 @@ class ModelTesterMixin:
                 output = model(**inputs_dict)[0]
 
         model.enable_xformers_memory_efficient_attention()
-        assert all(type(proc) == XFormersAttnProcessor for proc in model.attn_processors.values())
+        assert all(isinstance(proc, XFormersAttnProcessor) for proc in model.attn_processors.values())
         with torch.no_grad():
             if self.forward_requires_fresh_args:
                 output_2 = model(**self.inputs_dict(0))[0]
@@ -315,7 +315,7 @@ class ModelTesterMixin:
                 output_2 = model(**inputs_dict)[0]
 
         model.set_attn_processor(XFormersAttnProcessor())
-        assert all(type(proc) == XFormersAttnProcessor for proc in model.attn_processors.values())
+        assert all(isinstance(proc, XFormersAttnProcessor) for proc in model.attn_processors.values())
         with torch.no_grad():
             if self.forward_requires_fresh_args:
                 output_3 = model(**self.inputs_dict(0))[0]
@@ -343,7 +343,7 @@ class ModelTesterMixin:
             # If not has `set_attn_processor`, skip test
             return
 
-        assert all(type(proc) == AttnProcessor2_0 for proc in model.attn_processors.values())
+        assert all(isinstance(proc, AttnProcessor2_0) for proc in model.attn_processors.values())
         with torch.no_grad():
             if self.forward_requires_fresh_args:
                 output_1 = model(**self.inputs_dict(0))[0]
@@ -351,7 +351,7 @@ class ModelTesterMixin:
                 output_1 = model(**inputs_dict)[0]
 
         model.set_default_attn_processor()
-        assert all(type(proc) == AttnProcessor for proc in model.attn_processors.values())
+        assert all(isinstance(proc, AttnProcessor) for proc in model.attn_processors.values())
         with torch.no_grad():
             if self.forward_requires_fresh_args:
                 output_2 = model(**self.inputs_dict(0))[0]
@@ -359,7 +359,7 @@ class ModelTesterMixin:
                 output_2 = model(**inputs_dict)[0]
 
         model.set_attn_processor(AttnProcessor2_0())
-        assert all(type(proc) == AttnProcessor2_0 for proc in model.attn_processors.values())
+        assert all(isinstance(proc, AttnProcessor2_0) for proc in model.attn_processors.values())
         with torch.no_grad():
             if self.forward_requires_fresh_args:
                 output_4 = model(**self.inputs_dict(0))[0]
@@ -367,7 +367,7 @@ class ModelTesterMixin:
                 output_4 = model(**inputs_dict)[0]
 
         model.set_attn_processor(AttnProcessor())
-        assert all(type(proc) == AttnProcessor for proc in model.attn_processors.values())
+        assert all(isinstance(proc, AttnProcessor) for proc in model.attn_processors.values())
         with torch.no_grad():
             if self.forward_requires_fresh_args:
                 output_5 = model(**self.inputs_dict(0))[0]
