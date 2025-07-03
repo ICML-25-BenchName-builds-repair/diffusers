@@ -15,22 +15,13 @@ import os
 import re
 
 from huggingface_hub.utils import validate_hf_hub_args
-from transformers import AutoFeatureExtractor
 
 from ..models.modeling_utils import load_state_dict
 from ..utils import (
     logging,
 )
 from ..utils.hub_utils import _get_model_file
-from .single_file_utils import (
-    create_diffusers_controlnet_model_from_ldm,
-    create_diffusers_unet_model_from_ldm,
-    create_diffusers_vae_model_from_ldm,
-    create_scheduler_from_ldm,
-    create_text_encoders_and_tokenizers_from_ldm,
-    fetch_original_config,
-    infer_model_type,
-)
+from ..utils.import_utils import is_transformers_available
 
 
 logger = logging.get_logger(__name__)
@@ -75,18 +66,21 @@ def build_sub_model_components(
     if component_name in pipeline_components:
         return {}
 
+    # Import utilities when needed
+    utils = _import_single_file_utils()
+
     model_type = kwargs.get("model_type", None)
     image_size = kwargs.pop("image_size", None)
 
     if component_name == "unet":
         num_in_channels = kwargs.pop("num_in_channels", None)
-        unet_components = create_diffusers_unet_model_from_ldm(
+        unet_components = utils['create_diffusers_unet_model_from_ldm'](
             pipeline_class_name, original_config, checkpoint, num_in_channels=num_in_channels, image_size=image_size
         )
         return unet_components
 
     if component_name == "vae":
-        vae_components = create_diffusers_vae_model_from_ldm(
+        vae_components = utils['create_diffusers_vae_model_from_ldm'](
             pipeline_class_name, original_config, checkpoint, image_size
         )
         return vae_components
@@ -95,7 +89,7 @@ def build_sub_model_components(
         scheduler_type = kwargs.get("scheduler_type", "ddim")
         prediction_type = kwargs.get("prediction_type", None)
 
-        scheduler_components = create_scheduler_from_ldm(
+        scheduler_components = utils['create_scheduler_from_ldm'](
             pipeline_class_name,
             original_config,
             checkpoint,
@@ -107,7 +101,7 @@ def build_sub_model_components(
         return scheduler_components
 
     if component_name in ["text_encoder", "text_encoder_2", "tokenizer", "tokenizer_2"]:
-        text_encoder_components = create_text_encoders_and_tokenizers_from_ldm(
+        text_encoder_components = utils['create_text_encoders_and_tokenizers_from_ldm'](
             original_config,
             checkpoint,
             model_type=model_type,
@@ -117,6 +111,14 @@ def build_sub_model_components(
 
     if component_name == "safety_checker":
         if load_safety_checker:
+            try:
+                from transformers import AutoFeatureExtractor
+            except ImportError:
+                raise ImportError(
+                    "transformers is required to use the safety checker. "
+                    "Please install it with `pip install transformers`."
+                )
+            
             from ..pipelines.stable_diffusion.safety_checker import StableDiffusionSafetyChecker
 
             safety_checker = StableDiffusionSafetyChecker.from_pretrained(
@@ -142,7 +144,8 @@ def set_additional_components(
     components = {}
     model_type = kwargs.get("model_type", None)
     if pipeline_class_name in REFINER_PIPELINES:
-        model_type = infer_model_type(original_config, model_type=model_type)
+        utils = _import_single_file_utils()
+        model_type = utils['infer_model_type'](original_config, model_type=model_type)
         is_refiner = model_type == "SDXL-Refiner"
         components.update(
             {
@@ -260,11 +263,12 @@ class FromSingleFileMixin:
         while "state_dict" in checkpoint:
             checkpoint = checkpoint["state_dict"]
 
-        original_config = fetch_original_config(class_name, checkpoint, original_config_file)
+        utils = _import_single_file_utils()
+        original_config = utils['fetch_original_config'](class_name, checkpoint, original_config_file)
 
         if class_name == "AutoencoderKL":
             image_size = kwargs.pop("image_size", None)
-            component = create_diffusers_vae_model_from_ldm(
+            component = utils['create_diffusers_vae_model_from_ldm'](
                 class_name, original_config, checkpoint, image_size=image_size
             )
             return component["vae"]
@@ -273,7 +277,7 @@ class FromSingleFileMixin:
             upcast_attention = kwargs.pop("upcast_attention", False)
             image_size = kwargs.pop("image_size", None)
 
-            component = create_diffusers_controlnet_model_from_ldm(
+            component = utils['create_diffusers_controlnet_model_from_ldm'](
                 class_name, original_config, checkpoint, upcast_attention=upcast_attention, image_size=image_size
             )
             return component["controlnet"]
