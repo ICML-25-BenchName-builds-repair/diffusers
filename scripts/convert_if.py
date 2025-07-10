@@ -15,7 +15,7 @@ try:
     from omegaconf import OmegaConf
 except ImportError:
     raise ImportError(
-        "OmegaConf is required to convert the IF checkpoints. Please install it with `pip install" " OmegaConf`."
+        "OmegaConf is required to convert the IF checkpoints. Please install it with `pip install OmegaConf`."
     )
 
 

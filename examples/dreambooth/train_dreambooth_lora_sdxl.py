@@ -78,7 +78,7 @@ def save_model_card(
     for i, image in enumerate(images):
         image.save(os.path.join(repo_folder, f"image_{i}.png"))
         img_str += f"""
-        - text: '{validation_prompt if validation_prompt else ' ' }'
+        - text: '{validation_prompt if validation_prompt else " "}'
           output:
             url:
                 "image_{i}.png"
