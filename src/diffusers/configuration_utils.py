@@ -672,7 +672,7 @@ def flax_register_to_config(cls):
             # ignore flax specific attributes
             if field.name in self._flax_internal_args:
                 continue
-            if type(field.default) == dataclasses._MISSING_TYPE:
+            if field.default is dataclasses.MISSING:
                 default_kwargs[field.name] = None
             else:
                 default_kwargs[field.name] = getattr(self, field.name)
